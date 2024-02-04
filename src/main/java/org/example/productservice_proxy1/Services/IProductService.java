@@ -3,12 +3,14 @@ package org.example.productservice_proxy1.Services;
 import org.example.productservice_proxy1.Dtos.ProductDto;
 import org.example.productservice_proxy1.Models.Product;
 
+import java.util.List;
+
 public interface IProductService {
-    String getAllProducts();
+    List<Product> getAllProducts();
 
     Product getProduct(Long id);
 
-    String createProduct(ProductDto productDto);
+    Product createProduct(ProductDto productDto);
 
     String updateProduct(ProductDto productDto);
 

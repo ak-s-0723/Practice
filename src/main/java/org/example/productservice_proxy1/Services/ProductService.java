@@ -4,8 +4,11 @@ import org.example.productservice_proxy1.Dtos.ProductDto;
 import org.example.productservice_proxy1.Models.Category;
 import org.example.productservice_proxy1.Models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
@@ -16,8 +19,15 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public String getAllProducts() {
-        return null;
+    public List<Product> getAllProducts() {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<ProductDto[]> responseEntityProductDtos = restTemplate.getForEntity("https://fakestoreapi.com/products", ProductDto[].class);
+        List<Product> products = new ArrayList<>();
+        for(ProductDto productDto : responseEntityProductDtos.getBody()) {
+            products.add(getProduct(productDto));
+        }
+        //return products.toArray(new Product[0]); //In case, we wanted to return array only and not list , https://stackoverflow.com/questions/4042434/converting-arrayliststring-to-string-in-java
+        return products;
     }
 
     @Override
@@ -27,14 +37,21 @@ public class ProductService implements IProductService {
         //first of all it will be returned like this only
         //return restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",ProductDto.class,id).getBody().toString();
 
-        ProductDto productDto = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",ProductDto.class,id).getBody();
-        Product product = getProduct(productDto);
+        //second time it will be like this
+        //ProductDto ProductDto = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",ProductDto.class,id).getBody();
+
+        //third time
+        //Eg for sending headers in input using exchange() - https://riptutorial.com/spring/example/24622/setting-headers-on-spring-resttemplate-request#google_vignette ,  https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html#exchange-java.lang.String-org.springframework.http.HttpMethod-org.springframework.http.HttpEntity-java.lang.Class-java.lang.Object...-
+        ResponseEntity<ProductDto> responseEntityProductDto = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",ProductDto.class,id);
+        Product product = getProduct(responseEntityProductDto.getBody());
         return product;
     }
 
     @Override
-    public String createProduct(ProductDto productDto) {
-        return null;
+    public Product createProduct(ProductDto productDto) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        restTemplate.postForEntity("https://fakestoreapi.com/products",productDto,ProductDto.class);
+        return getProduct(productDto);
     }
 
     @Override
