@@ -9,9 +9,11 @@ import org.example.productservice_proxy1.Models.Category;
 @Setter
 @ToString
 public class ProductDto {
+    private Long id;
     private String title;
     private String description;
-    private String imageUrl;
+    private String image;
+    private RatingDto rating;
     private Double price;
-    private Category category;
+    private String category;
 }
