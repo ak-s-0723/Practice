@@ -21,6 +21,7 @@ public class ProductService implements IProductService {
     @Override
     public List<Product> getAllProducts() {
         RestTemplate restTemplate = restTemplateBuilder.build();
+        //First of all show with List<Product> and why it will not work using main2.java
         ResponseEntity<ProductDto[]> responseEntityProductDtos = restTemplate.getForEntity("https://fakestoreapi.com/products", ProductDto[].class);
         List<Product> products = new ArrayList<>();
         for(ProductDto productDto : responseEntityProductDtos.getBody()) {
@@ -42,6 +43,7 @@ public class ProductService implements IProductService {
 
         //third time
         //Eg for sending headers in input using exchange() - https://riptutorial.com/spring/example/24622/setting-headers-on-spring-resttemplate-request#google_vignette ,  https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html#exchange-java.lang.String-org.springframework.http.HttpMethod-org.springframework.http.HttpEntity-java.lang.Class-java.lang.Object...-
+        //Explain difference between getForEntity and getForObject and
         ResponseEntity<ProductDto> responseEntityProductDto = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",ProductDto.class,id);
         Product product = getProduct(responseEntityProductDto.getBody());
         return product;

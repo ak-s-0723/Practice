@@ -35,17 +35,17 @@ public class ProductController {
     @GetMapping("/{id}")
     //public Product GetProduct(@PathVariable Long id) {
     public ResponseEntity<Product> GetProduct(@PathVariable Long id) {
+        MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
         try {
-            MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
-            headers.add("calledBy","StupidFrontendEngineer");
             if(id < 1) {
+                headers.add("calledBy","StupidFrontendEngineer");
                 throw new IllegalArgumentException("Something went bad");
             }
             Product product = productService.getProduct(id);
             ResponseEntity<Product> responseEntity = new ResponseEntity<>(product,headers,HttpStatus.OK);
             return responseEntity;
         } catch(Exception exception) {
-            return new ResponseEntity<Product>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Product>(headers,HttpStatus.BAD_REQUEST);
         }
     }
 

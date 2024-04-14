@@ -1,0 +1,123 @@
+
+1. Where will controller get it's data from ?
+              -> service layer
+
+create services folder
+create class ProductService , add functions with return type as null
+               |
+               |__> right click -> refactor -> extract interface
+
+               QQ - What should be naming convention for an interface ?
+
+               Read Message and ask yes/no ?
+
+               One concrete class should not be added as dependency in another
+               concrete class , can explain with eg - storageproductservice/fakestoreproductservice if needed
+
+
+2. Have you guys gone through Fakestore API documentation which i shared on whatsapp group ?
+        -> So we will be just calling these APIs from our service layer.
+
+        -> Let's see what all APIs are there and also test them on Postman
+
+        -> Have you guys downloaded Postman ?
+
+        -> So, now we called getSingleProduct API from postman and we have got response as well, how should we code it ? Like call this third Party API from our code ?
+
+                  -> So there are 2 ways , one is direct way other is indirect way. Direct way is to create an HTTP Client and make request to this end point. Other way is making use of a library or class which is built-in -> RestTemplate.
+
+                  -> In first approach, we will be building from scratch
+
+                  -> In second approach, we will be leveraging some built-in thing
+
+                  -> We discussed in last to last class -> Never reinvent wheel if you don't get any significant improvement
+
+
+3. Rest Template is provided by spring framework and it has internal implementation of http client and everything and is used to invoke REST APIs on our behalf.
+
+Add RestTemplateBuilder as a dependency and build it in Methods.
+Why builder, What is benefit of builder - discuss that
+
+Let's start with getProduct by Id implementation , but how should we use it ?
+let's go inside class and see what function we can use
+
+Explain difference between getForEntity and getForObject , response entity, we will see in second half
+getForEntity ->
+
+ we know url ,
+ Let's look at response and see if we already have something very similar in our project, so id,title,description,category ....
+ It matches with ?
+
+
+This Product - Is it our model or FakestoreModel ?
+Should we corrupt it ? So what is other alternative we have ?
+Create FakeStoreProductDto and add fields (including FakeStoreRatingDto) based on whatever we got in response on Postman
+
+i) Code in ProductService
+
+ii) Include conversion logic from fakestoreproductDto to Product in service layer (What can be correct place for conversion logic)
+
+iii) Return that to controller.
+
+Code in controller now and test getProductById API
+
+
+4. Discussion about Jackson using Michael Jackson and telling how Product object being shown as JSON in Postman response
+Also what is data-structure used for representing json ? - MAP
+If Jackson won't be there, we have to get everything in map and then construct object from that map, we have to take care of everything , whether new fields got added or some fields got removed
+
+
+5. Show Status Code 200 on Postman
+     - What is this 200 OK
+     - Are we sending it ?
+     - From where is it coming ?
+
+
+------------------BREAK-------------------
+
+Show them ResponseEntity Body from RestTemplate class which is return type of getForEntity.
+
+
+what is body ?
+what is status ?
+
+Uptil now, dispatcher servlet was managing this on our behalf. Now if we don't want to rely on dispatcher servlet , we can write our logic , which we are going to write now.
+
+send some other status code with Product object in happy scenario
+
+
+6.  How do we handle exceptions in this case ?
+
+Like obviously Frontend will be relying on our API and we can share that documentation with frontend , that if they will pass some invalid input, they can expect this response.
+
+Lets implement that.
+
+
+7. Let's see headers on Postman
+What do you guys think, is purpose of headers ?
+
+see content-type : application/json
+This will tell your client that data which will be sent as a response , it will be json.
+
+so this headers contain metadata, data about data
+Lets see how can we send our custom headers
+
+Explain why we are using getBody in service while calling getForEntity in service layer
+
+-----------------------------------------------------------
+
+8. Let's implement getAllProducts() Method in service layer
+
+First of all show with List<Product> and why it will not work using main2.java
+Java is unable to determine datatype at runtime, only when we will be adding some value in this list, it will determine type and put.
+
+So then what should we use ?
+What is first things which u studied and after that you moved to List
+
+just change to array, when we are calling fakestoreapi
+
+----------------------------------------------------------
+
+9. Let's implement createProduct in service layer
+
+Let's check if resttemplate has something like POST
